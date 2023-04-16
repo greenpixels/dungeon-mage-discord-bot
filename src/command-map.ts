@@ -6,7 +6,7 @@ export type CommandProps = {
 	channel: TextableChannel;
 	author: User;
 	message: Message;
-	bot: Eris.Client;
+	client: Eris.Client;
 };
 
 export const CommandMap: { [command: string]: (options: CommandProps) => any } =

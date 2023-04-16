@@ -1,22 +1,25 @@
 import { CommandMap } from './command-map';
 import { onGuildMemberRemove } from './webhooks/on-guild-member-remove';
 import { Guild, Member, Message } from 'eris';
-const config: { token: string; invoke: string } = require('../bot.config.json');
+const config: {
+	token: string;
+	invoke: string;
+} = require('../bot.config.json');
 
 const Eris = require('eris');
-const bot = new Eris(config.token, {
+const client = new Eris(config.token, {
 	intents: ['guildMembers', ['allNonPrivileged']],
 });
 
-bot.on('ready', () => console.log('Ready!'));
+client.on('ready', () => console.log('Ready!'));
 
-bot.on('guildMemberRemove', (guild: Guild, member: Member) =>
-	onGuildMemberRemove(guild, member, bot)
+client.on('guildMemberRemove', (guild: Guild, member: Member) =>
+	onGuildMemberRemove(guild, member, client)
 );
 
-bot.on('guildBanAdd', () => console.log('A member has been banned.'));
+client.on('guildBanAdd', () => console.log('A member has been banned.'));
 
-bot.on('messageCreate', (message: Message) => {
+client.on('messageCreate', (message: Message) => {
 	let { content, channel, author } = message;
 	if (author.bot) return;
 
@@ -29,10 +32,10 @@ bot.on('messageCreate', (message: Message) => {
 	content = words.join(' ');
 
 	if (command in CommandMap) {
-		CommandMap[command]({ content, channel, author, message, bot });
+		CommandMap[command]({ content, channel, author, message, client });
 	} else {
 		console.warn(`Command ${command} was not found in command map`);
 	}
 });
 
-bot.connect();
+client.connect();
